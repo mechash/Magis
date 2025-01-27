@@ -13,7 +13,7 @@
 ###############################################################################
 # Things that the user might override on the commandline
 #
-
+FORKNAME			 = MAGIS
 # The target to build, see VALID_TARGETS below
 TARGET		?= PRIMUSX
 
@@ -23,10 +23,17 @@ LIB_MAJOR_VERSION?= 0
 
 LIB_MINOR_VERSION?= 3
 
+FW_Version = 1.0.0
 
+API_Version = 1.0.1
 
 # Compile-time options
-OPTIONS		?=
+OPTIONS		?= '__FORKNAME__="$(FORKNAME)"' \
+		   '__TARGET__="$(TARGET)"' \
+		   '__FW_VER__="$(FW_Version)"' \
+		   '__API_VER__="$(API_Version)"' \
+       '__BUILD_DATE__="$(shell date +%Y-%m-%d)"' \
+       '__BUILD_TIME__="$(shell date +%H:%M:%S)"' \
 
 # Debugger optons, must be empty or GDB
 DEBUG ?=
@@ -41,7 +48,7 @@ FLASH_SIZE ?=
 # Things that need to be maintained as the source changes
 #
 
-FORKNAME			 = Magis
+
 
 VALID_TARGETS	 = ALIENWIIF1 ALIENWIIF3 PRIMUSX PRIMUSX2 CC3D CHEBUZZF3 CJMCU PRIMUSV3R COLIBRI_RACE EUSTM32F103RC MOTOLAB NAZE NAZE32PRO OLIMEXINO PORT103R RMDO SPARKY SPRACINGF3 STM32F3DISCOVERY 
 
@@ -59,6 +66,7 @@ endif
 endif
 
 #REVISION = $(shell git log -1 --format="%h")
+
 
 # Working directories
 ROOT		 := $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
@@ -261,6 +269,7 @@ COMMON_SRC = build_config.cpp \
 		   drivers/sound_beeper.c \
 		   drivers/system.c \
 		   io/beeper.cpp \
+       io/oled_display.c \
 		   io/rc_controls.cpp \
 		   io/rc_curves.cpp \
 		   io/serial.cpp \
@@ -432,6 +441,7 @@ OLIMEXINO_SRC = startup_stm32f10x_md_gcc.S \
 
 DRONA_SRC = flight/acrobats.cpp \
             drivers/opticflow_paw3903.cpp \
+						drivers/display_ug2864hsweg01 \
             drivers/ranging_vl53l0x.cpp \
             drivers/sc18is602b.cpp\
             flight/posControl.cpp\
@@ -809,9 +819,7 @@ CFLAGS		 = $(ARCH_FLAGS) \
 		   $(DEVICE_FLAGS) \
 		   -DUSE_STDPERIPH_DRIVER \
 		   $(TARGET_FLAGS) \
-		   -D'__FORKNAME__="$(FORKNAME)"' \
-		   -D'__TARGET__="$(TARGET)"' \
-		   -D'__REVISION__="$(REVISION)"' \
+		   
 		   -save-temps=obj \
 		   -MMD -MP
 
@@ -829,9 +837,7 @@ CCFLAGS		 = $(ARCH_FLAGS) \
 		   $(DEVICE_FLAGS) \
 		   -DUSE_STDPERIPH_DRIVER \
 		   $(TARGET_FLAGS) \
-		   -D'__FORKNAME__="$(FORKNAME)"' \
-		   -D'__TARGET__="$(TARGET)"' \
-		   -D'__REVISION__="$(REVISION)"' \
+		  
 		   -save-temps=obj \
 		   -MMD -MP
 
